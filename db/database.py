@@ -1,6 +1,9 @@
+"""
+Provides access to main database accessors, engine, etc.
+"""
 from sqlalchemy import create_engine
-from config import EnvConfig
 from sqlalchemy.ext.declarative import declarative_base
+from config import EnvConfig
 
 env = EnvConfig()
 
