@@ -8,14 +8,14 @@ from config import EnvConfig
 
 env = EnvConfig()
 
-ENGINE = create_engine(env.database_url, echo=env.debug_database)
-Base = declarative_base()
-
 
 class Database:
     """
     Database boiler-plate management class
     """
+
+    engine = create_engine(env.database_url, echo=env.debug_database)
+    Base = declarative_base()
     db_initialised = False
 
     def __init__(self):
@@ -30,7 +30,7 @@ class Database:
         Initialise database tables
         """
         if not Database.db_initialised:
-            Base.metadata.create_all(ENGINE)
+            Database.Base.metadata.create_all(Database.engine)
             Database.db_initialised = True
 
     def get_session(self):
@@ -38,6 +38,6 @@ class Database:
         Returns a new session, sessions should be closed after usage, usually in a Finally block.
         """
         if not self.Session:
-            self.Session = scoped_session(sessionmaker(bind=ENGINE))
+            self.Session = scoped_session(sessionmaker(bind=Database.engine))
         return self.Session()
 
