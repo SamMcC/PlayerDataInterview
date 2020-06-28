@@ -11,7 +11,7 @@ def index():
     """
     Default path for web application
     """
-    # If no use defined create a new one and request name and weight
+    # If no user defined create a new one and request name and weight
     return render_template('index.html')
 
 
