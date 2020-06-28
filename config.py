@@ -35,3 +35,10 @@ class EnvConfig:
         Full database URL, e.g. mysql://admin:password123@192.168.1.5:8180
         """
         return str(os.environ.get('DATABASE_URL', 'sqlite:///:memory:'))
+
+    @property
+    def environment(self):
+        """
+        Environment in which the application is running (development/production)
+        """
+        return str(os.environ.get('ENVIRONMENT', 'development'))
