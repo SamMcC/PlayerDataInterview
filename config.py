@@ -41,4 +41,11 @@ class EnvConfig:
         """
         Environment in which the application is running (development/production)
         """
-        return str(os.environ.get('ENVIRONMENT', 'development'))
+        return str(os.environ.get('ENVIRONMENT', 'development')).lower()
+
+    @property
+    def log_level(self):
+        """
+        True if echo is enabled for SQLAlchemy, False otherwise
+        """
+        return str(os.environ.get('LOG_LEVEL', 'DEBUG')).upper()
