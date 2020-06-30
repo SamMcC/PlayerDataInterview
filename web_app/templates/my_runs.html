@@ -2,12 +2,19 @@
 
 {% block content %}
 <div id="run-data">
+    <div class="run-line">
+        <div class="col1 title">DATE</div>
+        <div class="col1 title">DISTANCE</div>
+        <div class="col1 title">TIME</div>
+        <div class="col1 title">CALORIES BURNED</div>
+    </div>
+    <hr>
     {% for run in runs %}
         <div class="run-line">
             <div class="col1 date"> {{ run['date'] }} </div>
-            <div class="col1 distance"> {{ run['distance'] }} </div>
-            <div class="col1 time"> {{ run['time'] }} </div>
-            <div class="col1 kcals"> {{ run['kcals'] }} </div>
+            <div class="col1 distance"> {{ run['distance'] }}km </div>
+            <div class="col1 time"> {{ run['time'] }} hours </div>
+            <div class="col1 kcals"> {{ run['kcals'] }}kcal </div>
         </div>
     {% endfor %}
     <div id="add-run"><a class="button" href="add-run">Add New Run</a></div>

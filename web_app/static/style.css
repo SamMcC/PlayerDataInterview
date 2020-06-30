@@ -1,0 +1,75 @@
+body {
+  font-family: arial;
+}
+
+.button {
+  background-color: #2d1154;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.button:hover {
+  background-color: #5d3184;
+}
+
+.run-line {
+    display: block;
+    width: 1000px;
+}
+
+.col1 {
+  display: inline-block;
+  width: 160px;
+}
+
+.col1.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.col1.date {
+  margin-right: 10px;
+  padding-top: 2px;
+  line-height: normal;
+}
+
+div.run-table-footer {
+  margin: 20px 2px 10px 40px;
+}
+
+div#add-run {
+  margin: 20px 2px 10px 40px;
+}
+
+fieldset {
+  border: none;
+}
+
+fieldset label {
+  float: left;
+  display: block;
+}
+
+fieldset input {
+  float: right;
+  display: block;
+}
+
+form {
+  width: 600px;
+  border-radius: 5px;
+  background-color: #d6dbe6;
+}
+
+form .button {
+  float: right;
+  margin-right: 200px;
+  display: block;
+}

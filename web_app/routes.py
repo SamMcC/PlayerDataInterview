@@ -33,7 +33,7 @@ def add_data():
     Path through which users post new run data
     """
     if request.method != 'POST':
-        return render_template('add_run.html')
+        return render_template('add_run.html', page_title='Add Run | kCalTracker')
     # Store data in DB, reload saved data and parse inputs
     date = datetime.fromisoformat(request.form.get('date'))
     time = float(request.form.get('time'))
@@ -41,8 +41,9 @@ def add_data():
     if date is None or time is None or time < 0 or distance is None or distance < 0:
         logger.debug('User-input issue on POST to add-run. Returning error message.')
         return render_template(
-            'new_user.html',
-            err='Invalid Inputs, ensure that date is set, and time and distance are greater than 0'
+            'add_run.html',
+            err='Invalid Inputs, ensure that date is set, and time and distance are greater than 0',
+            page_title='Add Run | kCalTracker'
         )
     db = Database()
     session = db.get_session()
@@ -51,12 +52,16 @@ def add_data():
         run_info = RunInfo(time_h=time, distance_km=distance, user_id=user.id, date=date)
         session.add(run_info)
         session.commit()
-        return render_template('my_runs.html')
+        return my_runs()
     except InvalidRequestError as err:
         logger.debug('Error in adding RunInfo to database.')
-        logger.debug(run_info)
+        logger.debug('distance: %s, time: %s, date: %s', (distance, time, date))
         session.rollback()
-        return render_template('add_run.html', err='Failed to add run to database, please check your inputs')
+        return render_template(
+            'add_run.html',
+            err='Failed to add run to database, please check your inputs',
+            page_title='Add Run | kCalTracker'
+        )
     finally:
         session.close()
 
@@ -70,9 +75,19 @@ def my_runs():
     session = db.get_session()
     runs = session.query(RunInfo).all()
     user = session.query(UserInfo).one_or_none()
-    run_data = []
+
     # Could potentially be done in a separate thread and passed asynchronously to frontend
     # if I was any good at AJAX wizardry.
+    run_data = calculate_run_data(runs, user)
+
+    session.close()
+    # Should be able to implement paged response by limiting the number of returned runs, and by limiting the number of
+    # runs which we read from the DB.
+    return render_template('my_runs.html', runs=run_data, has_more_runs=False, page_title='My Runs | kCalTracker')
+
+
+def calculate_run_data(runs, user):
+    run_data = []
     for run in runs:
         date = run.date
         time = run.time_h
@@ -86,11 +101,7 @@ def my_runs():
                 'kcals': kcals
             }
         )
-
-    session.close()
-    # Should be able to implement paged response by limiting the number of returned runs, and by limiting the number of
-    # runs which we read from the DB.
-    return render_template('my_runs.html', runs=run_data, has_more_runs=False)
+    return run_data
 
 
 def get_index():
@@ -104,7 +115,7 @@ def get_index():
         if user_info:
             return my_runs()
         else:
-            return render_template('new_user.html')
+            return render_template('new_user.html', page_title='New User | kCalTracker')
     except MultipleResultsFound:
         session.rollback()
     finally:
@@ -120,7 +131,8 @@ def post_index():
     if username is None or weight is None or weight < 0:
         return render_template(
             'new_user.html',
-            err='Invalid Inputs, ensure that username is set and weight is greater than 0'
+            err='Invalid Inputs, ensure that username is set and weight is greater than 0',
+            page_title='New User | kCalTracker'
         )
     db = Database()
     session = db.get_session()
@@ -128,9 +140,13 @@ def post_index():
         user_info = UserInfo(name=username, weight_kg=weight)
         session.add(user_info)
         session.commit()
-        return render_template('my_runs.html')
+        return my_runs()
     except InvalidRequestError as err:
         session.rollback()
-        return render_template('new_user.html', err='Failed to add user to database, please check your inputs')
+        return render_template(
+            'new_user.html',
+            err='Failed to add user to database, please check your inputs',
+            page_title='New User | kCalTracker'
+        )
     finally:
         session.close()
