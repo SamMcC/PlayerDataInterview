@@ -27,7 +27,7 @@ class EnvConfig:
         """
         True if echo is enabled for SQLAlchemy, False otherwise
         """
-        return bool(os.environ.get('DATABASE_LOGGING', True))
+        return bool(os.environ.get('DATABASE_LOGGING', False))
 
     @property
     def database_url(self):

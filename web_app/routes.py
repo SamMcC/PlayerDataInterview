@@ -1,6 +1,8 @@
 """
 Defines routes for the WSGI application
 """
+from datetime import datetime
+
 from flask import Flask, render_template, request
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import MultipleResultsFound
@@ -13,7 +15,7 @@ from maths.leger_kcal_calculator import calculate_kcal
 app = Flask(__name__, template_folder='./templates')
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     """
     Default path for web application
@@ -23,7 +25,7 @@ def index():
     return get_index()
 
 
-@app.route('/add-run')
+@app.route('/add-run', methods=['GET', 'POST'])
 def add_data():
     """
     Path through which users post new run data
@@ -31,9 +33,9 @@ def add_data():
     if request.method != 'POST':
         return render_template('add_run.html')
     # Store data in DB, reload saved data and parse inputs
-    date = request.form.get('date')
-    time = request.form.get('time')
-    distance = request.form.get('distance')
+    date = datetime.fromisoformat(request.form.get('date'))
+    time = float(request.form.get('time'))
+    distance = float(request.form.get('distance'))
     if date is None or time is None or time < 0 or distance is None or distance < 0:
         return render_template(
             'new_user.html',
@@ -67,7 +69,7 @@ def my_runs():
         date = run.date
         time = run.time_h
         distance = run.distance_km
-        (kcals, _) = calculate_kcal(user.weight, distance, time)
+        (kcals, _) = calculate_kcal(user.weight_kg, distance, time)
         run_data.append(
             {
                 'date': date,
@@ -104,8 +106,8 @@ def post_index():
     """
     Handles post request for index
     """
-    username = request.form.get('name')
-    weight = request.form.get('weight')
+    username = request.form.get('username')
+    weight = float(request.form.get('weight'))
     if username is None or weight is None or weight < 0:
         return render_template(
             'new_user.html',
@@ -114,7 +116,7 @@ def post_index():
     db = Database()
     session = db.get_session()
     try:
-        user_info = UserInfo(name=username, weight=weight)
+        user_info = UserInfo(name=username, weight_kg=weight)
         session.add(user_info)
         session.commit()
         return render_template('my_runs.html')
