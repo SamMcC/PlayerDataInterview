@@ -45,5 +45,5 @@ def calculate_kcal_per_min(mass_kg: float, vo2_max: float):
 def calculate_kcal_total(kcal_per_min: float, time_h: float):
     if kcal_per_min <= 0 or time_h <= 0:
         return None
-    kcal_total = kcal_per_min * (time_h / 60)
+    kcal_total = kcal_per_min * (time_h * 60)
     return kcal_total

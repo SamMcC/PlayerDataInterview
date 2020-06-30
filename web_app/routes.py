@@ -11,8 +11,10 @@ from db.user_info import UserInfo
 from db.run_info import RunInfo
 from db.database import Database
 from maths.leger_kcal_calculator import calculate_kcal
+from util.logger import get_logger
 
 app = Flask(__name__, template_folder='./templates')
+logger = get_logger(__name__)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -37,6 +39,7 @@ def add_data():
     time = float(request.form.get('time'))
     distance = float(request.form.get('distance'))
     if date is None or time is None or time < 0 or distance is None or distance < 0:
+        logger.debug('User-input issue on POST to add-run. Returning error message.')
         return render_template(
             'new_user.html',
             err='Invalid Inputs, ensure that date is set, and time and distance are greater than 0'
@@ -50,6 +53,8 @@ def add_data():
         session.commit()
         return render_template('my_runs.html')
     except InvalidRequestError as err:
+        logger.debug('Error in adding RunInfo to database.')
+        logger.debug(run_info)
         session.rollback()
         return render_template('add_run.html', err='Failed to add run to database, please check your inputs')
     finally:
@@ -66,6 +71,8 @@ def my_runs():
     runs = session.query(RunInfo).all()
     user = session.query(UserInfo).one_or_none()
     run_data = []
+    # Could potentially be done in a separate thread and passed asynchronously to frontend
+    # if I was any good at AJAX wizardry.
     for run in runs:
         date = run.date
         time = run.time_h
@@ -81,7 +88,8 @@ def my_runs():
         )
 
     session.close()
-    # Should be able to implement paged response by limiting the number of returned runs
+    # Should be able to implement paged response by limiting the number of returned runs, and by limiting the number of
+    # runs which we read from the DB.
     return render_template('my_runs.html', runs=run_data, has_more_runs=False)
 
 
