@@ -2,7 +2,7 @@
 Primary entry-point for application
 """
 from waitress import serve
-from config import EnvConfig
+from util.config import EnvConfig
 from db.database import Database
 from web_app.routes import app
 

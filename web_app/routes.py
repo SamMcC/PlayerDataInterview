@@ -44,7 +44,8 @@ def add_data():
     db = Database()
     session = db.get_session()
     try:
-        run_info = RunInfo()
+        user = session.query(UserInfo).one_or_none()
+        run_info = RunInfo(time_h=time, distance_km=distance, user_id=user.id, date=date)
         session.add(run_info)
         session.commit()
         return render_template('my_runs.html')
@@ -93,7 +94,7 @@ def get_index():
     try:
         user_info = session.query(UserInfo).one_or_none()
         if user_info:
-            return render_template("my_runs.html")
+            return my_runs()
         else:
             return render_template('new_user.html')
     except MultipleResultsFound:

@@ -14,11 +14,15 @@ def calculate_kcal(mass_kg: float, distance_km: float, time_h: float):
         logger.error('Zero division in kcal calculation')
         logger.exception(err)
         return None
+    except TypeError as err:
+        logger.error('Bad calculation')
+        logger.exception(err)
+        return None
     return kcal_total, kcal_per_min
 
 
 def calculate_velocity(distance_km: float, time_h: float):
-    if time_h >= 0 or distance_km <= 0:
+    if time_h <= 0 or distance_km <= 0:
         return None
     v_kph = distance_km / time_h
     return v_kph

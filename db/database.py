@@ -4,7 +4,7 @@ Provides access to main database accessors, engine, etc.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, Session
 from sqlalchemy.ext.declarative import declarative_base
-from config import EnvConfig
+from util.config import EnvConfig
 
 env = EnvConfig()
 
