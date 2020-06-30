@@ -4,10 +4,10 @@ Provides UserInfo class for the ORM model
 
 from sqlalchemy import Column, String, Integer, Float
 
-from db.database import Base
+from db.database import Database
 
 
-class UserInfo(Base):
+class UserInfo(Database.Base):
     """
     Defines a user as a name and a weight
     """

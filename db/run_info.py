@@ -3,11 +3,11 @@ Provides RunInfo class for the ORM model
 """
 from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey
 
-from db.database import Base
+from db.database import Database
 from db.user_info import UserInfo
 
 
-class RunInfo(Base):
+class RunInfo(Database.Base):
     """
     Represents a single run in the database
     """
