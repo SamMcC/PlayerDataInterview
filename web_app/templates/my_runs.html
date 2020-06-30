@@ -1,0 +1,24 @@
+{% extends "skeleton.html" %}
+
+{% block content %}
+<div id="run-data">
+    {% for run in runs %}
+        <div class="run-line">
+            <div class="col1 date"> {{ run['date'] }} </div>
+            <div class="col1 distance"> {{ run['distance'] }} </div>
+            <div class="col1 time"> {{ run['time'] }} </div>
+            <div class="col1 kcals"> {{ run['kcals'] }} </div>
+        </div>
+    {% endfor %}
+</div>
+{% if has_more_runs %}
+    <div id="run-table-footer">
+        {% if not curr_page == num_pages %}
+            <a href="?prev={{ current_page }}&next=next">Next Page</a> &nbsp;
+        {% endif %}
+        {% if not curr_page == 1 %}
+            <a href="?prev={{ current_page }}&next=prev">Previous Page</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock content %}

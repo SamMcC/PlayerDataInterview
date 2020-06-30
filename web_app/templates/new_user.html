@@ -1,0 +1,15 @@
+{% extends "skeleton.html" %}
+
+{% block content %}
+<div id="new-user">
+    <form>
+        <fieldset id="user-info">
+            <label for="username">Set Username</label>
+            <input id="username" type="text" name="username" />
+            <label for="weight">Set Weight (in Kg)</label>
+            <input id="weight" type="number" name="weight" value="0.0" min="0.0" />
+            <button formaction="submit">Add User Details</button>
+        </fieldset>
+    </form>
+</div>
+{% endblock content %}

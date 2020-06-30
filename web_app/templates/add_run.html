@@ -1,0 +1,15 @@
+{% extends "skeleton.html" %}
+
+{% block content %}
+<div id="add-run">
+    <form>
+        <label for="date">Run Date</label>
+        <input id="date" name="date" type="date" value="{{ today }}">
+        <label for="time">Run Time (hours)</label>
+        <input id="time" name="time" type="number" min="0.0">
+        <label for="distance">Run Distance (km)</label>
+        <input id="distance" name="distance" type="number" min="0.0">
+        <button value="submit">Submit Run</button>
+    </form>
+</div>
+{% endblock content %}
