@@ -8,7 +8,7 @@ from web_app.routes import app
 
 env = EnvConfig()
 
-if __name__ == 'main':
+if __name__ == '__main__':
     if not env.environment == 'production':
         Database.init_db()
     serve(

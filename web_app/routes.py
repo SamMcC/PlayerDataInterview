@@ -3,7 +3,7 @@ Defines routes for the WSGI application
 """
 from flask import Flask, render_template, request
 
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__, template_folder='./templates')
 
 
 @app.route('/')
@@ -11,8 +11,8 @@ def index():
     """
     Default path for web application
     """
-    # If no user defined create a new one and request name and weight
-    return render_template('index.html')
+
+    return render_template('new_user.html')
 
 
 @app.route('/add-data')
