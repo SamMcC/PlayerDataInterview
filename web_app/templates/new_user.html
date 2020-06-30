@@ -2,12 +2,12 @@
 
 {% block content %}
 <div id="new-user">
-    <form>
+    <form action="/" method="post">
         <fieldset id="user-info">
             <label for="username">Set Username</label>
             <input id="username" type="text" name="username" />
             <label for="weight">Set Weight (in kg)</label>
-            <input id="weight" type="number" name="weight" value="0.0" min="0.0" />
+            <input id="weight" type="number" name="weight" value="0.0" min="0.0" step="0.001" />
             <label for="submit">Add User Details</label>
             <input id="submit" type="submit" />
         </fieldset>

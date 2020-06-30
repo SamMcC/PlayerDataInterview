@@ -144,3 +144,5 @@ cython_debug/
 ### IDE Directories ###
 .idea/
 .vscode/
+
+*.db

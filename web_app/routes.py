@@ -8,6 +8,7 @@ from sqlalchemy.orm.exc import MultipleResultsFound
 from db.user_info import UserInfo
 from db.run_info import RunInfo
 from db.database import Database
+from maths.leger_kcal_calculator import calculate_kcal
 
 app = Flask(__name__, template_folder='./templates')
 
@@ -20,6 +21,65 @@ def index():
     if request.method == 'POST':
         return post_index()
     return get_index()
+
+
+@app.route('/add-run')
+def add_data():
+    """
+    Path through which users post new run data
+    """
+    if request.method != 'POST':
+        return render_template('add_run.html')
+    # Store data in DB, reload saved data and parse inputs
+    date = request.form.get('date')
+    time = request.form.get('time')
+    distance = request.form.get('distance')
+    if date is None or time is None or time < 0 or distance is None or distance < 0:
+        return render_template(
+            'new_user.html',
+            err='Invalid Inputs, ensure that date is set, and time and distance are greater than 0'
+        )
+    db = Database()
+    session = db.get_session()
+    try:
+        run_info = RunInfo()
+        session.add(run_info)
+        session.commit()
+        return render_template('my_runs.html')
+    except InvalidRequestError as err:
+        session.rollback()
+        return render_template('add_run.html', err='Failed to add run to database, please check your inputs')
+    finally:
+        session.close()
+
+
+@app.route('/my-runs')
+def my_runs():
+    """
+    Path through which users get info on their runs
+    """
+    db = Database()
+    session = db.get_session()
+    runs = session.query(RunInfo).all()
+    user = session.query(UserInfo).one_or_none()
+    run_data = []
+    for run in runs:
+        date = run.date
+        time = run.time_h
+        distance = run.distance_km
+        (kcals, _) = calculate_kcal(user.weight, distance, time)
+        run_data.append(
+            {
+                'date': date,
+                'time': time,
+                'distance': distance,
+                'kcals': kcals
+            }
+        )
+
+    session.close()
+    # Should be able to implement paged response by limiting the number of returned runs
+    return render_template('my_runs.html', runs=run_data, has_more_runs=False)
 
 
 def get_index():
@@ -54,7 +114,7 @@ def post_index():
     db = Database()
     session = db.get_session()
     try:
-        user_info = UserInfo()
+        user_info = UserInfo(name=username, weight=weight)
         session.add(user_info)
         session.commit()
         return render_template('my_runs.html')
@@ -63,22 +123,3 @@ def post_index():
         return render_template('new_user.html', err='Failed to add user to database, please check your inputs')
     finally:
         session.close()
-
-
-@app.route('/add-run')
-def add_data():
-    """
-    Path through which users post data
-    """
-    if request.method != 'POST':
-        return render_template('add-run.html')
-    # Store data in DB, reload saved data and parse inputs
-    return my_runs()
-
-
-@app.route('/my-runs')
-def my_runs():
-    """
-    Path through which users post data
-    """
-    return render_template('my-runs.html')

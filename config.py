@@ -27,14 +27,14 @@ class EnvConfig:
         """
         True if echo is enabled for SQLAlchemy, False otherwise
         """
-        return bool(os.environ.get('DATABASE_LOGGING', False))
+        return bool(os.environ.get('DATABASE_LOGGING', True))
 
     @property
     def database_url(self):
         """
         Full database URL, e.g. mysql://admin:password123@192.168.1.5:8180
         """
-        return str(os.environ.get('DATABASE_URL', 'sqlite:///:memory:'))
+        return str(os.environ.get('DATABASE_URL', 'sqlite:///app.db'))
 
     @property
     def environment(self):
