@@ -2,7 +2,7 @@
 Provides access to main database accessors, engine, etc.
 """
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, Session
 from sqlalchemy.ext.declarative import declarative_base
 from config import EnvConfig
 
@@ -33,7 +33,7 @@ class Database:
             Database.Base.metadata.create_all(Database.engine)
             Database.db_initialised = True
 
-    def get_session(self):
+    def get_session(self) -> Session:
         """
         Returns a new session, sessions should be closed after usage, usually in a Finally block.
         """
